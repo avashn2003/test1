@@ -412,7 +412,7 @@ public:
         while (inputFile1 >> line)
         {
             stringstream ss(line);
-            string firstname, lastname, personalcode, password, gender, phonenumber, birth, nationalcode, membership;
+            string firstname, lastname, password, gender, phonenumber, birth, nationalcode, membership;
             getline(ss, nationalcode, ',');
             getline(ss, password, ',');
             getline(ss, firstname, ',');
@@ -522,7 +522,7 @@ public:
     {
         bool isNational = false;
         cout << "*****************************\n";
-        cout << "enter national code want to delete : ";
+        cout << "enter national code want to change : ";
         string newNationalCode;
         cin >> newNationalCode;
         cout << "*****************************\n";
@@ -549,7 +549,7 @@ public:
             {
                 cout << "what wholud you need to change : ";
                 string answer;
-                getline(cin, answer);
+                cin>>answer;
 
                 if (answer == "password")
                 {
@@ -615,7 +615,7 @@ public:
                     goto error;
                 }
 
-                if (answer == "phone number")
+                if (answer == "phone")
                 {
                     string newPhone;
                     cout << "enter new phone : ";
@@ -698,7 +698,7 @@ public:
         cin >> searchNationalCode;
         cout << "*****************************\n";
 
-        ifstream inputFile1("customer1.csv");
+        ifstream inputFile1("customer.csv");
 
         string line, line2;
         int n = 0;
@@ -740,8 +740,9 @@ public:
 
                         outputFile << nationalcode << a << password << a << firstname << a << lastname << a << gender
                                    << a << phonenumber << a << birth << a << membership << endl;
-                        m++;
                     }
+                    m++;
+                }
                     outputFile.close();
                     inputFile2.close();
                     inputFile1.close();
@@ -763,11 +764,10 @@ public:
                 cout << "the national code is not exist.";
             }
         }
-    }
     //----------------------------------------account------------------------------------------//
 
     /////////////////see accounts//////////////////////// okkkkkkkkk
-    void searchAccounts()
+    void seeAccounts()
     {
         ifstream inputFile1("account.csv");
 
@@ -850,7 +850,7 @@ public:
         file.close();
     }
     //////////////////////change account information///////////////////////// okkkkkkkkkkkk
-    void updateAccountpass(string accountNumber, int newTest)
+    void updateAccountpass()
     {
         bool isNational = false;
         cout << "*****************************\n";
@@ -1128,7 +1128,7 @@ public:
             if (nationalcode == newNationalCode)
             {
                 string newreturnamount;
-                cout << "enter new password : ";
+                cout << "enter new amount : ";
                 cin >> newreturnamount;
 
                 unsigned int pass2 = Hash(newreturnamount);
@@ -1230,12 +1230,12 @@ public:
     {
         bool isCode = false;
         cout << "*****************************\n";
-        cout << "enter national code that you want to see : ";
+        cout << "enter code that you want to see : ";
         string searchCode;
         cin >> searchCode;
         cout << "*****************************\n";
 
-        ifstream inputFile1("customer.csv");
+        ifstream inputFile1("transaction.csv");
 
         string line;
 
@@ -1280,7 +1280,7 @@ public:
         cin >> newCode;
         cout << "*****************************\n";
 
-        ifstream inputFile1("trasaction.csv");
+        ifstream inputFile1("transaction.csv");
 
         string line, line2;
         int n = 0;
@@ -1324,7 +1324,7 @@ public:
                         getline(ss, code, ',');
 
                         outputFile << sender << a << reciever << a << amount << a << date
-                                   << a << time << a << code << endl;
+                                   << a << time << a << newCode2 << endl;
                     }
 
                     if (m != n)
@@ -1370,7 +1370,7 @@ int main()
 {
     Admin person("ava","shahabeddin","0441171613","1234",25);
 
-    person.searchCustomer();
+    person.updateTransactionCode();
 }
 
 #endif
