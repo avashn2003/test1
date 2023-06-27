@@ -21,16 +21,43 @@ unsigned int Hash(string &data)
 class Admin
 {
 private:
-    string name, lastName, codeMeli, password;
+    string name, lastName, nationalCode, password;
+    int age;
 
 public:
     //------------------------------------------------admin-----------------------------------------------------//
-    Admin(string name, string lastName, string codeMeli, string password) // sazande admin
+    Admin(string name, string lastName, string nationalCode, string password,int age) // sazande admin
     {
         this->name = name;
         this->lastName = lastName;
-        this->codeMeli = codeMeli;
+        this->nationalCode = nationalCode;
         this->password = password;
+        this->age = age;
+    }
+
+    string getName()
+    {
+        return name;
+    }
+
+    string getLastName()
+    {
+        return lastName;
+    }
+
+    string getNationalCode()
+    {
+        return nationalCode;
+    }
+
+    string getPassword()
+    {
+        return password;
+    }
+
+    int getAge()
+    {
+        return age;
     }
     //----------------------------------------employee------------------------------------------//
 
@@ -181,7 +208,7 @@ public:
     {
         bool isNational = false;
         cout << "*****************************\n";
-        cout << "enter national code want to delete : ";
+        cout << "enter national code want to change : ";
         string newNationalCode;
         cin >> newNationalCode;
         cout << "*****************************\n";
@@ -349,7 +376,7 @@ public:
 
                 rename("temp.csv", "employee.csv");
 
-                cout << "delete successfully,";
+                cout << "delete successfully,"<<"\n";
                 cout << "*****************************\n";
                 goto error;
             }
@@ -1335,3 +1362,10 @@ public:
         }
     }
 };
+
+int main()
+{
+    Admin person("ava","shahabeddin","0441171613","1234",25);
+
+    person.searchCustomer();
+}
