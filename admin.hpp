@@ -777,46 +777,48 @@ public:
     ///////////////////add account////////////////////////// okkkkkkkkkkk
     void addAccount()
     {
-        string nationalcode,type;
+        string nationalcode, type;
         ofstream file;
         file.open("account.csv", ios::app);
-        
-        cout<<"*****************************\n";
-        cout<<"Enter your national code: ";
-        getline(cin,nationalcode);
+
+        cout << "*****************************\n";
+        cout << "Enter your national code: ";
+        getline(cin, nationalcode);
 
         srand(time(NULL));
-        unsigned long long int number=rand()*10;
+        unsigned long long int number = rand() * 10;
 
-        cout<<"Enter your acoount type: 1:current account 2:short term account 3:long term account : ";
-        getline(cin,type);
+        cout << "Enter your acoount type: 1:current account 2:short term account 3:long term account : ";
+        getline(cin, type);
 
-        time_t expYear= time(nullptr);
-        tm* local_time = localtime(&expYear);
-        expYear=local_time->tm_year+1900 +5;
+        time_t expYear = time(nullptr);
+        tm *local_time = localtime(&expYear);
+        expYear = local_time->tm_year + 1900 + 5;
 
-        time_t expMonth= time(nullptr);
-        tm* local_time1 = localtime(&expMonth);
-        expMonth=local_time1->tm_mon+1;
-
-        srand(time(NULL));
-        unsigned long long pin=(rand()/10)+111;
-        string pin1=to_string(pin);
-        unsigned int pin2= Hash(pin1);
-        
+        time_t expMonth = time(nullptr);
+        tm *local_time1 = localtime(&expMonth);
+        expMonth = local_time1->tm_mon + 1;
 
         srand(time(NULL));
-        unsigned long long int cvv2=rand(),balance;
-        cout<<"Enter your balance: ";
-        cin>>balance;
-        
+        unsigned long long pin = (rand() / 10) + 111;
+        string pin1 = to_string(pin);
+        unsigned int pin2 = Hash(pin1);
 
-        string c=",";
-        //writing in account file
-        file<<nationalcode<<c<<number<<c<<type<<c<<expYear<<c<<expMonth<<c<<cvv2<<c<<pin2<<c<<balance<<endl;
+        srand(time(NULL));
+        unsigned long long int cvv2 = rand(), balance;
+        cout << "Enter your balance: ";
+        cin >> balance;
 
-        cout<<"*****************************\n"<<"your card number:"<<number<<'\n'<<"exp year:"<<expYear<<'\n'
-        <<"exp month:"<<expMonth<<'\n'<<"cvv2: "<<cvv2<<'\n'<<"pin:"<<pin<<"\n*****************************"<<endl;
+        string c = ",";
+        // writing in account file
+        file << nationalcode << c << number << c << type << c << expYear << c << expMonth << c << cvv2 << c << pin2 << c << balance << endl;
+
+        cout << "*****************************\n"
+             << "your card number:" << number << '\n'
+             << "exp year:" << expYear << '\n'
+             << "exp month:" << expMonth << '\n'
+             << "cvv2: " << cvv2 << '\n'
+             << "pin:" << pin << "\n*****************************" << endl;
 
         file.close();
     }
@@ -998,7 +1000,7 @@ public:
         }
     }
     //----------------------------------------loan------------------------------------------//
-    
+
     //////////////////see loans//////////////////////////// okkkkkkkkkk
     void seeLoan()
     {
@@ -1011,7 +1013,7 @@ public:
         {
 
             stringstream ss(line);
-            string nationalcode,code,amount,returnamount,date;
+            string nationalcode, code, amount, returnamount, date;
             getline(ss, nationalcode, ',');
             getline(ss, code, ',');
             getline(ss, amount, ',');
@@ -1046,7 +1048,7 @@ public:
         while (inputFile1 >> line)
         {
             stringstream ss(line);
-            string nationalcode,code,amount,returnamount,date;
+            string nationalcode, code, amount, returnamount, date;
             getline(ss, nationalcode, ',');
             getline(ss, code, ',');
             getline(ss, amount, ',');
@@ -1075,8 +1077,94 @@ public:
     //////////////////////update loan return amount//////////////////
     void updateLoanReturn()
     {
+        bool isNational = false;
+        cout << "*****************************\n";
+        cout << "enter national code want to change : ";
+        string newNationalCode;
+        cin >> newNationalCode;
+        cout << "*****************************\n";
 
+        ifstream inputFile1("loan.csv");
+
+        string line, line2;
+        int n = 0;
+
+        while (inputFile1 >> line)
+        {
+            stringstream ss(line);
+            string nationalcode, code, amount, returnamount, date;
+            getline(ss, nationalcode, ',');
+            getline(ss, code, ',');
+            getline(ss, amount, ',');
+            getline(ss, returnamount, ',');
+            getline(ss, date, ',');
+            if (nationalcode == newNationalCode)
+            {
+                string newreturnamount;
+                cout << "enter new password : ";
+                cin >> newreturnamount;
+
+                unsigned int pass2 = Hash(newreturnamount);
+
+                int m = 0;
+                isNational = true;
+                ofstream outputFile("temp.csv", ios::app);
+                ifstream inputFile2("loan.csv");
+                string a = ",";
+
+                while (inputFile2 >> line2)
+                {
+                    if (m == n)
+                    {
+                        stringstream ss(line2);
+
+                        getline(ss, nationalcode, ',');
+                        getline(ss, code, ',');
+                        getline(ss, amount, ',');
+                        getline(ss, returnamount, ',');
+                        getline(ss, date, ',');
+
+                        outputFile << nationalcode << a << code << a << amount << a << newreturnamount
+                                   << a << date << endl;
+                    }
+
+                    if (m != n)
+                    {
+                        stringstream ss(line2);
+
+                        getline(ss, nationalcode, ',');
+                        getline(ss, code, ',');
+                        getline(ss, amount, ',');
+                        getline(ss, returnamount, ',');
+                        getline(ss, date, ',');
+
+                        outputFile << nationalcode << a << code << a << amount << a << returnamount
+                                   << a << date << endl;
+                    }
+                    m++;
+                }
+                outputFile.close();
+                inputFile2.close();
+                inputFile1.close();
+
+                remove("loan.csv");
+
+                rename("temp.csv", "loan.csv");
+
+                cout << "change successfully." << endl;
+                cout << "*****************************\n";
+                goto error;
+            }
+            n++;
+        }
+
+    error:
+        if (isNational == false)
+        {
+            cout << "the national code is not exist.";
+        }
     }
+
     //----------------------------------------tarakonesh------------------------------------------//
 
     //////////////////see transaction/////////////////////////
@@ -1091,31 +1179,33 @@ public:
         {
 
             stringstream ss(line);
-            string nationalcode,code,amount,returnamount,date;
-            getline(ss, nationalcode, ',');
-            getline(ss, code, ',');
+            string sender, code, amount, time, reciever, date;
+            getline(ss, sender, ',');
+            getline(ss, reciever, ',');
             getline(ss, amount, ',');
-            getline(ss, returnamount, ',');
             getline(ss, date, ',');
+            getline(ss, time, ',');
+            getline(ss, code, ',');
 
-            cout << "national code " << i << " is : " << nationalcode << "\n";
-            cout << "code " << i << " is : " << code << "\n";
+            cout << "sender " << i << " is : " << sender << "\n";
+            cout << "reciever " << i << " is : " << reciever << "\n";
             cout << "amount " << i << " is : " << amount << "\n";
-            cout << " return amount " << i << " is : " << returnamount << "\n";
-            cout << "date " << i << " is : " << date << "\n";
+            cout << " date " << i << " is : " << date << "\n";
+            cout << "time " << i << " is : " << time << "\n";
+            cout << "code " << i << " is : " << code << "\n";
             cout << "*****************************\n";
 
             i++;
         }
     }
     //////////////////search transaction//////////////////////
-    void searchTransactions()
+    void searchTransaction()
     {
-        bool isNational = false;
+        bool isCode = false;
         cout << "*****************************\n";
         cout << "enter national code that you want to see : ";
-        string searchNationalCode;
-        cin >> searchNationalCode;
+        string searchCode;
+        cin >> searchCode;
         cout << "*****************************\n";
 
         ifstream inputFile1("customer.csv");
@@ -1125,37 +1215,127 @@ public:
         while (inputFile1 >> line)
         {
             stringstream ss(line);
-            string nationalcode,code,amount,returnamount,date;
-            getline(ss, nationalcode, ',');
-            getline(ss, code, ',');
+            string sender, code, amount, time, reciever, date;
+            getline(ss, sender, ',');
+            getline(ss, reciever, ',');
             getline(ss, amount, ',');
-            getline(ss, returnamount, ',');
             getline(ss, date, ',');
+            getline(ss, time, ',');
+            getline(ss, code, ',');
 
-            if (nationalcode == searchNationalCode)
+            if (code == searchCode)
             {
-                isNational = true;
-                cout << "national code is : " << nationalcode << "\n";
-                cout << "code is : " << code << "\n";
+                isCode = true;
+                cout << "sender is : " << sender << "\n";
+                cout << "reciever is : " << reciever << "\n";
                 cout << "amount is : " << amount << "\n";
-                cout << "return amount is : " << returnamount << "\n";
-                cout << "gender is : " << gender << "\n";
                 cout << "date is : " << date << "\n";
+                cout << "time is : " << time << "\n";
+                cout << "code is : " << code << "\n";
                 cout << "*****************************\n";
                 goto error;
             }
         }
 
     error:
-        if (isNational == false)
+        if (isCode == false)
         {
-            cout << "the national code is not exist.";
+            cout << "the code is not exist.";
         }
     }
-    //////////////////////update transaction //////////////////
-    void updateTransaction()
+    //////////////////////update transaction code//////////////////
+    void updateTransactionCode()
     {
+        bool isCode = false;
+        cout << "*****************************\n";
+        cout << "enter code want to change : ";
+        string newCode;
+        cin >> newCode;
+        cout << "*****************************\n";
 
+        ifstream inputFile1("trasaction.csv");
+
+        string line, line2;
+        int n = 0;
+
+        while (inputFile1 >> line)
+        {
+            stringstream ss(line);
+            string sender, code, amount, time, reciever, date;
+            getline(ss, sender, ',');
+            getline(ss, reciever, ',');
+            getline(ss, amount, ',');
+            getline(ss, date, ',');
+            getline(ss, time, ',');
+            getline(ss, code, ',');
+
+            if (code == newCode)
+            {
+                string newCode2;
+                cout << "enter new code : ";
+                cin >> newCode2;
+
+                unsigned int pass2 = Hash(newCode2);
+
+                int m = 0;
+                isCode = true;
+                ofstream outputFile("temp.csv", ios::app);
+                ifstream inputFile2("transaction.csv");
+                string a = ",";
+
+                while (inputFile2 >> line2)
+                {
+                    if (m == n)
+                    {
+                        stringstream ss(line2);
+
+                        getline(ss, sender, ',');
+                        getline(ss, reciever, ',');
+                        getline(ss, amount, ',');
+                        getline(ss, date, ',');
+                        getline(ss, time, ',');
+                        getline(ss, code, ',');
+
+                        outputFile << sender << a << reciever << a << amount << a << date
+                                   << a << time << a << code << endl;
+                    }
+
+                    if (m != n)
+                    {
+                        stringstream ss(line2);
+
+                        getline(ss, sender, ',');
+                        getline(ss, reciever, ',');
+                        getline(ss, amount, ',');
+                        getline(ss, date, ',');
+                        getline(ss, time, ',');
+                        getline(ss, code, ',');
+
+                        outputFile << sender << a << reciever << a << amount << a << date
+                                   << a << time << a << code << endl;
+                    }
+                    m++;
+                }
+                outputFile.close();
+                inputFile2.close();
+                inputFile1.close();
+
+                remove("transaction.csv");
+
+                rename("temp.csv", "transaction.csv");
+
+                cout << "change successfully." << endl;
+                cout << "*****************************\n";
+                goto error;
+            }
+            n++;
+        }
+
+    error:
+        if (isCode == false)
+        {
+            cout << "the code is not exist.";
+        }
     }
 };
   
